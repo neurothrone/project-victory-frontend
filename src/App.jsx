@@ -4,7 +4,7 @@ import InputGroup from "./components/InputGroup.jsx";
 import {useEffect, useState} from "react";
 import {io} from "socket.io-client";
 
-const BASE_API_URL = "https://project-victory.azurewebsites.net";
+const BASE_API_URL = "https://project-victory-api.azurewebsites.net";
 
 function App() {
   const [messages, setMessages] = useState([]);
