@@ -11,6 +11,10 @@ function App() {
     autoConnect: true
   });
 
+  socket.on("connect", () => {
+    console.log("Connected to the server");
+  });
+
   socket.on("message", (message) => {
     console.log("New message received:", message);
     setMessages((prevMessages) => [...prevMessages, message]);
