@@ -4,9 +4,9 @@ import InputGroup from "./components/InputGroup.jsx";
 import {useEffect, useState} from "react";
 import {io} from "socket.io-client";
 
-const BASE_API_URL = "https://project-victory.azurewebsites.net";
+const BASE_API_URL = "https://project-victory-backend.azurewebsites.net";
 
-function App() {
+function App() {  
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
@@ -61,7 +61,8 @@ function App() {
 
   async function loadMessages() {
     try {
-      const response = await fetch(`${BASE_API_URL}/api/messages`);
+      const sixHoursAgo = Date.now() - 12 * 60 * 60 * 1000;
+      const response = await fetch(`${BASE_API_URL}/api/msg?since=${sixHoursAgo}`);
       const messages = await response.json();
       setMessages(messages);
     } catch (error) {
