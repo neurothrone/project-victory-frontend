@@ -4,10 +4,12 @@ import InputGroup from "./components/InputGroup.jsx";
 import {useEffect, useState} from "react";
 import {io} from "socket.io-client";
 
+const API_URL = "https://project-victory.azurewebsites.net/api/messages";
+
 function App() {
   const [messages, setMessages] = useState([]);
 
-  const socket = io("https://project-victory.azurewebsites.net/api/messages", {
+  const socket = io(API_URL, {
     autoConnect: true
   });
 
@@ -30,7 +32,7 @@ function App() {
 
   async function onMessageReceived(message) {
     try {
-      const response = await fetch("https://project-victory.azurewebsites.net/api/messages", {
+      const response = await fetch(API_URL, {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({message: message})
@@ -49,7 +51,7 @@ function App() {
 
   async function loadMessages() {
     try {
-      const response = await fetch("https://project-victory.azurewebsites.net/api/messages");
+      const response = await fetch(API_URL);
       const messages = await response.json();
       setMessages(messages);
     } catch (error) {
