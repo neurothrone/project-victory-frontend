@@ -3,17 +3,47 @@
 import Header from "./components/Header.jsx";
 import ChatWindow from "./components/ChatWindow.jsx";
 import InputGroup from "./components/InputGroup.jsx";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 function App() {
   const [messages, setMessages] = useState([]);
 
-  function onMessageReceived(message) {
-    const newMessage = {
-      message: message,
-      timestamp: new Date().toISOString()
-    };
-    setMessages([...messages, newMessage]);
+  useEffect(() => {
+    async function fetchMessages() {
+      await loadMessages();
+    }
+    fetchMessages();
+  }, []);
+
+
+
+  async function onMessageReceived(message) {
+    try {
+      const response = await fetch("https://project-victory.azurewebsites.net/api/messages", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({message: message})
+      });
+
+      if (!response.ok) {
+        alert("Failed to send message");
+        return;
+      }
+
+      await loadMessages();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function loadMessages() {
+    try {
+      const response = await fetch("https://project-victory.azurewebsites.net/api/messages");
+      const messages = await response.json();
+      setMessages(messages);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
