@@ -4,23 +4,33 @@ import InputGroup from "./components/InputGroup.jsx";
 import {useEffect, useState} from "react";
 import {io} from "socket.io-client";
 
-const API_URL = "https://project-victory.azurewebsites.net/api/messages";
+const BASE_API_URL = "https://project-victory.azurewebsites.net";
 
 function App() {
   const [messages, setMessages] = useState([]);
 
-  const socket = io(API_URL, {
-    autoConnect: true
-  });
+  useEffect(() => {
+    const socket = io(BASE_API_URL, {
+      withCredentials: true,
+    });
 
-  socket.on("connect", () => {
-    console.log("Connected to the server");
-  });
+    socket.on("connect", () => {
+      console.log("Connected to the server");
+    });
 
-  socket.on("message", (message) => {
-    console.log("New message received:", message);
-    setMessages((prevMessages) => [...prevMessages, message]);
-  });
+    socket.on("message", (message) => {
+      console.log("New message received:", message);
+      setMessages((prevMessages) => [...prevMessages, message]);
+    });
+
+    socket.on("disconnect", () => {
+      console.log("Disconnected from the server");
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   useEffect(() => {
     async function fetchMessages() {
@@ -32,7 +42,7 @@ function App() {
 
   async function onMessageReceived(message) {
     try {
-      const response = await fetch(API_URL, {
+      const response = await fetch(`${BASE_API_URL}/api/messages`, {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({message: message})
@@ -51,7 +61,7 @@ function App() {
 
   async function loadMessages() {
     try {
-      const response = await fetch(API_URL);
+      const response = await fetch(`${BASE_API_URL}/api/messages`);
       const messages = await response.json();
       setMessages(messages);
     } catch (error) {
