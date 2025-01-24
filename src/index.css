@@ -37,6 +37,7 @@ main {
   border: 2px solid transparent;
   border-radius: 5px;
   flex-grow: 1;
+  overflow-x: hidden;
   overflow-y: auto;
 }
 
