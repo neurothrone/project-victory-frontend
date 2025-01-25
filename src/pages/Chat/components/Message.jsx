@@ -1,18 +1,19 @@
 ﻿function Message(props) {
-  const {msg} = props;
+  // eslint-disable-next-line react/prop-types
+  const {message} = props;
 
   return (
     <div className="message">
       <div className="message-header">
-        <span className="username">Username</span>
-        <span className="timestamp">{new Date(msg.timestamp).toLocaleString("en-US", {
+        <span className="username">{message.username}</span>
+        <span className="timestamp">{new Date(message.timestamp).toLocaleString("en-US", {
           hour: "2-digit",
           minute: "2-digit",
           hour12: false
         })}</span>
       </div>
       <div className="message-body">
-        {msg.message}
+        {message.text}
       </div>
     </div>
   );

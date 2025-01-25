@@ -1,82 +1,26 @@
-import Header from "./components/Header.jsx";
-import ChatWindow from "./components/ChatWindow.jsx";
-import InputGroup from "./components/InputGroup.jsx";
-import {useEffect, useState} from "react";
-import {io} from "socket.io-client";
+import {useState} from "react";
+import {BrowserRouter, Routes, Route, Navigate} from 'react-router';
+import ChatPage from "./pages/Chat/ChatPage.jsx";
+import LoginPage from "./pages/Login/LoginPage.jsx";
 
-const BASE_API_URL = "https://project-victory-backend.azurewebsites.net";
 
-function App() {  
-  const [messages, setMessages] = useState([]);
-
-  useEffect(() => {
-    const socket = io(BASE_API_URL, {
-      withCredentials: true,
-    });
-
-    socket.on("connect", () => {
-      console.log("Connected to the server");
-    });
-
-    socket.on("message", (message) => {
-      console.log("New message received:", message);
-      setMessages((prevMessages) => [...prevMessages, message]);
-    });
-
-    socket.on("disconnect", () => {
-      console.log("Disconnected from the server");
-    });
-
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
-
-  useEffect(() => {
-    async function fetchMessages() {
-      await loadMessages();
-    }
-
-    fetchMessages();
-  }, []);
-
-  async function onMessageReceived(message) {
-    try {
-      const response = await fetch(`${BASE_API_URL}/api/messages`, {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({message: message})
-      });
-
-      if (!response.ok) {
-        alert("Failed to send message");
-        return;
-      }
-
-      await loadMessages();
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  async function loadMessages() {
-    try {
-      const sixHoursAgo = Date.now() - 12 * 60 * 60 * 1000;
-      const response = await fetch(`${BASE_API_URL}/api/msg?since=${sixHoursAgo}`);
-      const messages = await response.json();
-      setMessages(messages);
-    } catch (error) {
-      console.log(error);
-    }
-  }
+function App() {
+  const [username, setUsername] = useState(localStorage.getItem("username") || null);
 
   return (
-    <div className="container d-flex flex-column vh-100">
-      <Header/>
-      <ChatWindow messages={messages}/>
-      <InputGroup onSendMessage={(message) => onMessageReceived(message)}/>
-    </div>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/"
+          element={username ? <Navigate to="/chat"/> : <LoginPage setUsername={setUsername}/>}
+        />
+        <Route
+          path="/chat"
+          element={username ? <ChatPage username={username}/> : <Navigate to="/"/>}
+        />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App

@@ -16,8 +16,8 @@ function ChatWindow(props) {
   return (
     <main>
       <div id="messages" className="px-3 pt-3 mb-3">
-        {messages.map((msg) => (
-          <Message key={msg.timestamp} msg={msg}/>
+        {messages.map((message) => (
+          <Message key={message.timestamp} message={message}/>
         ))}
         <div ref={messagesEndRef}/>
       </div>
