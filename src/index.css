@@ -82,6 +82,14 @@ main {
   color: #66d9ff;
 }
 
+.current-username {
+  font-weight: bold;
+  color: #ffcc66;
+  /*color: #d466ff;*/
+  /*color: #66ffcc;*/
+  /*color: #ff66b2;*/
+}
+
 .timestamp {
   font-style: italic;
   color: #888;
