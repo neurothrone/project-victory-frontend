@@ -16,9 +16,12 @@ function ChatWindow(props) {
   return (
     <main>
       <div id="messages" className="px-3 pt-3 mb-3">
-        {messages.map((message) => (
-          <Message key={message.timestamp} message={message}/>
-        ))}
+        {messages.length === 0 ?
+          <div className="alert alert-info">No messages yet. Be the first to say something!</div>
+          : messages.map((message) => (
+            <Message key={message.timestamp} message={message}/>
+          ))
+        }
         <div ref={messagesEndRef}/>
       </div>
     </main>
