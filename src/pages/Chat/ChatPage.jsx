@@ -7,6 +7,7 @@ import {BASE_API_URL} from "../../config.js";
 
 function ChatPage() {
   const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const socket = io(BASE_API_URL, {
@@ -42,12 +43,7 @@ function ChatPage() {
   }, []);
 
   async function onSendMessage(message) {
-    const username = localStorage.getItem("username") || null;
-    if (!username) {
-      // TODO: navigate to login page
-      return;
-    }
-
+    const username = localStorage.getItem("username");
     const newMessage = {
       username: username,
       text: message,
@@ -62,16 +58,17 @@ function ChatPage() {
 
       if (!response.ok) {
         alert("Failed to send message");
-        return;
       }
-
-      await loadMessages();
     } catch (error) {
       console.log(error);
     }
   }
 
   async function loadMessages() {
+    setLoading(true);
+
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
     try {
       const sixHoursAgo = Date.now() - 12 * 60 * 60 * 1000;
       const response = await fetch(`${BASE_API_URL}/api/msg?since=${sixHoursAgo}`);
@@ -79,14 +76,28 @@ function ChatPage() {
       setMessages(messages);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
     <div className="container d-flex flex-column vh-100">
       <Header/>
-      <ChatWindow messages={messages}/>
-      <InputGroup onSendMessage={(message) => onSendMessage(message)}/>
+      {loading ? (
+        <div className="centered-container">
+          <div className="spinner"></div>
+        </div>
+      ) : (
+        <>
+          {messages.length === 0 ? (
+            <div className="centered-container">
+              <span className="chat-placeholder">No messages yet. Be the first to say something!</span>
+            </div>
+          ) : <ChatWindow messages={messages}/>}
+          <InputGroup onSendMessage={(message) => onSendMessage(message)}/>
+        </>
+      )}
     </div>
   )
 }

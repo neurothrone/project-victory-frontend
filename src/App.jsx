@@ -62,7 +62,7 @@ function App() {
   return (
     <BrowserRouter>
       {loading ? (
-        <div className="loading-spinner">
+        <div className="centered-container">
           <div className="spinner"></div>
         </div>
       ) : (
