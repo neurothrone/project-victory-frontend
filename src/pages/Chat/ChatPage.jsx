@@ -3,17 +3,15 @@ import {io} from "socket.io-client";
 import Header from "../../components/Header.jsx";
 import ChatWindow from "./components/ChatWindow.jsx";
 import InputGroup from "./components/InputGroup.jsx";
+import {BASE_API_URL} from "../../config.js";
 
 function ChatPage() {
   const [messages, setMessages] = useState([]);
 
-  const apiUrl = import.meta.env.VITE_DEV_API_BASE_URL;
-  // const apiUrl = process.env.VITE_PROD_API_BASE_URL;
-
   useEffect(() => {
-    const socket = io(apiUrl, {
+    const socket = io(BASE_API_URL, {
       withCredentials: true,
-      query: { username: localStorage.getItem("username") }
+      query: {username: localStorage.getItem("username")}
     });
 
 
@@ -56,7 +54,7 @@ function ChatPage() {
     };
 
     try {
-      const response = await fetch(`${apiUrl}/api/messages`, {
+      const response = await fetch(`${BASE_API_URL}/api/messages`, {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(newMessage)
@@ -76,7 +74,7 @@ function ChatPage() {
   async function loadMessages() {
     try {
       const sixHoursAgo = Date.now() - 12 * 60 * 60 * 1000;
-      const response = await fetch(`${apiUrl}/api/msg?since=${sixHoursAgo}`);
+      const response = await fetch(`${BASE_API_URL}/api/msg?since=${sixHoursAgo}`);
       const messages = await response.json();
       setMessages(messages);
     } catch (error) {

@@ -1,14 +1,12 @@
 import {useEffect, useRef, useState} from "react";
 import "./LoginPage.css";
+import {BASE_API_URL} from "../../config.js";
 
 function LoginPage(props) {
   const [userInput, setUserInput] = useState("");
   const inputRef = useRef(null);
   // eslint-disable-next-line react/prop-types
   const {setUsername} = props;
-
-  const apiUrl = import.meta.env.VITE_DEV_API_BASE_URL;
-  // const apiUrl = process.env.VITE_PROD_API_BASE_URL;
 
   useEffect(() => {
     document.body.classList.add("login-page-body");
@@ -31,7 +29,7 @@ function LoginPage(props) {
   }
 
   const handleLogin = async () => {
-    const response = await fetch(`${apiUrl}/api/username`, {
+    const response = await fetch(`${BASE_API_URL}/api/username`, {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({username: userInput})
