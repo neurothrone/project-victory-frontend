@@ -1,0 +1,13 @@
+.login-page-body {
+  justify-content: center;
+  align-items: center;
+}
+
+.login-container {
+  background: linear-gradient(135deg, #3a3a50, #2a2a38);
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  width: 350px;
+}
