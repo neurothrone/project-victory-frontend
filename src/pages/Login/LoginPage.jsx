@@ -1,6 +1,5 @@
 import {useEffect, useRef, useState} from "react";
 import "./LoginPage.css";
-import {BASE_API_URL} from "../../config.js";
 
 function LoginPage(props) {
   const [userInput, setUserInput] = useState("");
@@ -15,41 +14,13 @@ function LoginPage(props) {
     };
   }, []);
 
-
-  function clickHandler() {
-    if (!isValidInput()) {
-      alert("Please enter a message");
-      return;
-    }
-    inputRef.current.focus();
-  }
-
   function isValidInput() {
     return userInput.trim().length > 0;
   }
 
-  const handleLogin = async () => {
-    const response = await fetch(`${BASE_API_URL}/api/username`, {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({username: userInput})
-    });
-
-    if (!response.ok) {
-      const {error} = await response.json();
-      alert(error);
-      return;
-    }
-
-    const {isTaken} = await response.json();
-    if (isTaken) {
-      alert("Username already taken");
-      return;
-    }
-
-    localStorage.setItem("username", userInput);
+  function clickHandler() {
     setUsername(userInput);
-  };
+  }
 
   return (
     <div className="login-container">
@@ -75,7 +46,7 @@ function LoginPage(props) {
                 className="btn"
                 tabIndex="2"
                 disabled={!isValidInput()}
-                onClick={handleLogin}>
+                onClick={clickHandler}>
           Enter Chat
         </button>
       </div>
