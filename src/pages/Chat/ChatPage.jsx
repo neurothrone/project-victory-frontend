@@ -4,16 +4,18 @@ import Header from "../../components/Header.jsx";
 import ChatWindow from "./components/ChatWindow.jsx";
 import InputGroup from "./components/InputGroup.jsx";
 
-// const BASE_API_URL = "https://project-victory-backend.azurewebsites.net";
-const BASE_API_URL = "http://localhost:3000";
-
 function ChatPage() {
   const [messages, setMessages] = useState([]);
 
+  const apiUrl = import.meta.env.VITE_DEV_API_BASE_URL;
+  // const apiUrl = process.env.VITE_PROD_API_BASE_URL;
+
   useEffect(() => {
-    const socket = io(BASE_API_URL, {
+    const socket = io(apiUrl, {
       withCredentials: true,
+      query: { username: localStorage.getItem("username") }
     });
+
 
     socket.on("connect", () => {
       console.log("Connected to the server");
@@ -54,10 +56,10 @@ function ChatPage() {
     };
 
     try {
-      const response = await fetch(`${BASE_API_URL}/api/messages`, {
+      const response = await fetch(`${apiUrl}/api/messages`, {
         method: "POST",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(newMessage) // TODO: replace with newMessage, fix backend
+        body: JSON.stringify(newMessage)
       });
 
       if (!response.ok) {
@@ -74,7 +76,7 @@ function ChatPage() {
   async function loadMessages() {
     try {
       const sixHoursAgo = Date.now() - 12 * 60 * 60 * 1000;
-      const response = await fetch(`${BASE_API_URL}/api/msg?since=${sixHoursAgo}`);
+      const response = await fetch(`${apiUrl}/api/msg?since=${sixHoursAgo}`);
       const messages = await response.json();
       setMessages(messages);
     } catch (error) {

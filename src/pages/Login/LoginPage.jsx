@@ -7,6 +7,9 @@ function LoginPage(props) {
   // eslint-disable-next-line react/prop-types
   const {setUsername} = props;
 
+  const apiUrl = import.meta.env.VITE_DEV_API_BASE_URL;
+  // const apiUrl = process.env.VITE_PROD_API_BASE_URL;
+
   useEffect(() => {
     document.body.classList.add("login-page-body");
     return () => {
@@ -28,12 +31,24 @@ function LoginPage(props) {
   }
 
   const handleLogin = async () => {
-    // TODO: Check if username is already taken
-    const isTaken = false;
+    const response = await fetch(`${apiUrl}/api/username`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({username: userInput})
+    });
+
+    if (!response.ok) {
+      const {error} = await response.json();
+      alert(error);
+      return;
+    }
+
+    const {isTaken} = await response.json();
     if (isTaken) {
       alert("Username already taken");
       return;
     }
+
     localStorage.setItem("username", userInput);
     setUsername(userInput);
   };
